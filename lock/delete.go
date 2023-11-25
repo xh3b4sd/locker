@@ -1,4 +1,4 @@
-package redis
+package lock
 
 import (
 	"strings"
@@ -7,7 +7,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (l *Redis) Delete(key string) error {
+func (l *Lock) Delete(key string) error {
 	var err error
 
 	if key == "" {
@@ -33,7 +33,7 @@ func (l *Redis) Delete(key string) error {
 	return nil
 }
 
-func (l *Redis) delete(key string) error {
+func (l *Lock) delete(key string) error {
 	var err error
 
 	var con redis.Conn

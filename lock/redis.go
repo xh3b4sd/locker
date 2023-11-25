@@ -1,4 +1,4 @@
-package redis
+package lock
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ type Config struct {
 	Pre string
 }
 
-type Redis struct {
+type Lock struct {
 	brk breakr.Interface
 	exp time.Duration
 	del string
@@ -31,7 +31,7 @@ type Redis struct {
 	pre string
 }
 
-func New(c Config) *Redis {
+func New(c Config) *Lock {
 	if c.Brk == nil {
 		c.Brk = breakr.Default()
 	}
@@ -45,9 +45,9 @@ func New(c Config) *Redis {
 		c.Pre = "loc"
 	}
 
-	var l *Redis
+	var l *Lock
 	{
-		l = &Redis{
+		l = &Lock{
 			brk: c.Brk,
 			exp: c.Exp,
 			del: ":",

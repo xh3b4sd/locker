@@ -1,6 +1,6 @@
 //go:build redis
 
-package redis
+package lock
 
 import (
 	"testing"
