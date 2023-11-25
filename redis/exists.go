@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/gomodule/redigo/redis"
@@ -55,7 +56,9 @@ func (l *Redis) exists(key string) (string, bool, error) {
 	var res string
 	{
 		res, err = redis.String(con.Do("GET", arg...))
-		if err != nil {
+		if errors.Is(err, redis.ErrNil) {
+			return "", false, nil
+		} else if err != nil {
 			return "", false, tracer.Mask(err)
 		}
 	}

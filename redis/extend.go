@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/gomodule/redigo/redis"
@@ -14,8 +15,10 @@ func (l *Redis) Extend(key string, val string) error {
 		return tracer.Maskf(lockKeyEmptyError, "Locker.Extend")
 	}
 
+	var ext bool
+
 	act := func() error {
-		err := l.extend(key, val)
+		ext, err = l.extend(key, val)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -30,10 +33,16 @@ func (l *Redis) Extend(key string, val string) error {
 		}
 	}
 
+	{
+		if !ext {
+			return tracer.Mask(lockNotFoundError)
+		}
+	}
+
 	return nil
 }
 
-func (l *Redis) extend(key string, val string) error {
+func (l *Redis) extend(key string, val string) (bool, error) {
 	var err error
 
 	var con redis.Conn
@@ -56,14 +65,18 @@ func (l *Redis) extend(key string, val string) error {
 	var res string
 	{
 		res, err = redis.String(con.Do("SET", arg...))
-		if err != nil {
-			return tracer.Mask(err)
+		if errors.Is(err, redis.ErrNil) {
+			return false, nil
+		} else if err != nil {
+			return false, tracer.Mask(err)
 		}
 	}
 
-	if res != "OK" {
-		return tracer.Mask(executionFailedError)
+	{
+		if res != "OK" {
+			return false, tracer.Mask(executionFailedError)
+		}
 	}
 
-	return nil
+	return true, nil
 }
