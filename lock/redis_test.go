@@ -153,7 +153,7 @@ func Test_Redis_Expiry(t *testing.T) {
 	}
 
 	{
-		time.Sleep(1 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 
 	// The first Create call should not hold the lock anymore due to expiry.
@@ -161,7 +161,7 @@ func Test_Redis_Expiry(t *testing.T) {
 	{
 		val, err = loc.Create(key)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 	}
 
@@ -174,7 +174,7 @@ func Test_Redis_Expiry(t *testing.T) {
 	{
 		err = loc.Extend(key, val)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 	}
 
@@ -187,7 +187,7 @@ func Test_Redis_Expiry(t *testing.T) {
 	{
 		err = loc.Extend(key, val)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 	}
 
@@ -200,7 +200,7 @@ func Test_Redis_Expiry(t *testing.T) {
 	{
 		err = loc.Extend(key, val)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 	}
 
