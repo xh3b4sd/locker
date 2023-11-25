@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -17,9 +18,10 @@ func (l *Redis) Create(key string) (string, error) {
 	}
 
 	var val string
+	var cre bool
 
 	act := func() error {
-		val, err = l.create(key)
+		val, cre, err = l.create(key)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -34,10 +36,16 @@ func (l *Redis) Create(key string) (string, error) {
 		}
 	}
 
+	{
+		if !cre {
+			return "", tracer.Mask(lockAlreadyExistsError)
+		}
+	}
+
 	return val, nil
 }
 
-func (l *Redis) create(key string) (string, error) {
+func (l *Redis) create(key string) (string, bool, error) {
 	var err error
 
 	var con redis.Conn
@@ -65,14 +73,18 @@ func (l *Redis) create(key string) (string, error) {
 	var res string
 	{
 		res, err = redis.String(con.Do("SET", arg...))
-		if err != nil {
-			return "", tracer.Mask(err)
+		if errors.Is(err, redis.ErrNil) {
+			return "", false, nil
+		} else if err != nil {
+			return "", false, tracer.Mask(err)
 		}
 	}
 
-	if res != "OK" {
-		return "", tracer.Mask(executionFailedError)
+	{
+		if res != "OK" {
+			return "", false, tracer.Mask(executionFailedError)
+		}
 	}
 
-	return val, nil
+	return val, true, nil
 }
