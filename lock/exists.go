@@ -1,4 +1,4 @@
-package redis
+package lock
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (l *Redis) Exists(key string) (string, bool, error) {
+func (l *Lock) Exists(key string) (string, bool, error) {
 	var err error
 
 	if key == "" {
@@ -37,7 +37,7 @@ func (l *Redis) Exists(key string) (string, bool, error) {
 	return val, exi, nil
 }
 
-func (l *Redis) exists(key string) (string, bool, error) {
+func (l *Lock) exists(key string) (string, bool, error) {
 	var err error
 
 	var con redis.Conn
