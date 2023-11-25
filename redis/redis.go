@@ -26,6 +26,7 @@ type Config struct {
 type Redis struct {
 	brk breakr.Interface
 	exp time.Duration
+	del string
 	poo *redis.Pool
 	pre string
 }
@@ -49,6 +50,7 @@ func New(c Config) *Redis {
 		l = &Redis{
 			brk: c.Brk,
 			exp: c.Exp,
+			del: ":",
 			poo: c.Poo,
 			pre: c.Pre,
 		}

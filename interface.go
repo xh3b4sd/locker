@@ -31,6 +31,7 @@ type Interface interface {
 	// Extend prevents a distributed lock from expiring.
 	//
 	//     @inp[0] the lock key to extend
+	//     @inp[0] the lock value to extend
 	//
-	Extend(string) error
+	Extend(string, string) error
 }
