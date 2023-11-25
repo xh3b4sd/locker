@@ -1,6 +1,6 @@
 package fake
 
-func (f *Fake) Extend(key string) error {
+func (f *Fake) Extend(key string, val string) error {
 	if f.FakeExtend != nil {
 		return f.FakeExtend()
 	}

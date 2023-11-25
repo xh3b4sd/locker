@@ -1,6 +1,9 @@
 package redis
 
 import (
+	"strings"
+
+	"github.com/gomodule/redigo/redis"
 	"github.com/xh3b4sd/tracer"
 )
 
@@ -8,7 +11,7 @@ func (l *Redis) Exists(key string) (string, bool, error) {
 	var err error
 
 	if key == "" {
-		return "", false, tracer.Mask(lockKeyEmptyError)
+		return "", false, tracer.Maskf(lockKeyEmptyError, "Locker.Exists")
 	}
 
 	var val string
@@ -33,7 +36,29 @@ func (l *Redis) Exists(key string) (string, bool, error) {
 	return val, exi, nil
 }
 
-// TODO
 func (l *Redis) exists(key string) (string, bool, error) {
-	return "", false, nil
+	var err error
+
+	var con redis.Conn
+	{
+		con = l.poo.Get()
+		defer con.Close()
+	}
+
+	var arg []interface{}
+	{
+		arg = append(arg,
+			strings.Join([]string{l.pre, key}, l.del),
+		)
+	}
+
+	var res string
+	{
+		res, err = redis.String(con.Do("GET", arg...))
+		if err != nil {
+			return "", false, tracer.Mask(err)
+		}
+	}
+
+	return res, res != "", nil
 }
