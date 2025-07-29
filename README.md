@@ -4,7 +4,7 @@ Distributed redis lock.
 
 ```go
 import (
-	"github.com/xh3b4sd/locker/lock"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/locker/pool"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	// Every locker requires a redis connection pool.
 	var loc locker.Interface
 	{
-		loc = lock.New(lock.Config{
+		loc = locker.New(locker.Config{
 			Poo: pool.New(),
 		})
 	}
