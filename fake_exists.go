@@ -1,4 +1,4 @@
-package fake
+package locker
 
 func (f *Fake) Exists(key string) (string, bool, error) {
 	if f.FakeExtend != nil {

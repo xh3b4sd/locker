@@ -1,4 +1,4 @@
-package fake
+package locker
 
 func (f *Fake) Create(key string) (string, error) {
 	if f.FakeCreate != nil {

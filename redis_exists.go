@@ -1,4 +1,4 @@
-package lock
+package locker
 
 import (
 	"errors"
@@ -8,18 +8,21 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (l *Lock) Exists(key string) (string, bool, error) {
+func (r *Redis) Exists(key string) (string, bool, error) {
 	var err error
 
 	if key == "" {
-		return "", false, tracer.Maskf(lockKeyEmptyError, "Locker.Exists")
+		return "", false, tracer.Mask(lockKeyEmptyError,
+			tracer.Context{Key: "method", Value: "Redis.Exists"},
+			tracer.Context{Key: "lock key", Value: key},
+		)
 	}
 
 	var val string
 	var exi bool
 
-	act := func() error {
-		val, exi, err = l.exists(key)
+	fnc := func() error {
+		val, exi, err = r.exists(key)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -28,7 +31,7 @@ func (l *Lock) Exists(key string) (string, bool, error) {
 	}
 
 	{
-		err = l.brk.Execute(act)
+		err = r.bac.Backoff(fnc)
 		if err != nil {
 			return "", false, tracer.Mask(err)
 		}
@@ -37,19 +40,19 @@ func (l *Lock) Exists(key string) (string, bool, error) {
 	return val, exi, nil
 }
 
-func (l *Lock) exists(key string) (string, bool, error) {
+func (r *Redis) exists(key string) (string, bool, error) {
 	var err error
 
 	var con redis.Conn
 	{
-		con = l.poo.Get()
+		con = r.poo.Get()
 		defer con.Close()
 	}
 
 	var arg []interface{}
 	{
 		arg = append(arg,
-			strings.Join([]string{l.pre, key}, l.del),
+			strings.Join([]string{r.pre, key}, r.del),
 		)
 	}
 
