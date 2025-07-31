@@ -38,4 +38,4 @@ jobs:
           REDIS_HOST: "redis"
           REDIS_PORT: "6379"
         run: |
-          go test ./... -race -tags redis
+          go test ./... -race -tags integration
