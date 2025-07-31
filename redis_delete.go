@@ -1,4 +1,4 @@
-package lock
+package locker
 
 import (
 	"strings"
@@ -7,15 +7,18 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (l *Lock) Delete(key string) error {
+func (r *Redis) Delete(key string) error {
 	var err error
 
 	if key == "" {
-		return tracer.Maskf(lockKeyEmptyError, "Locker.Delete")
+		return tracer.Mask(lockKeyEmptyError,
+			tracer.Context{Key: "method", Value: "Redis.Delete"},
+			tracer.Context{Key: "lock key", Value: key},
+		)
 	}
 
-	act := func() error {
-		err := l.delete(key)
+	fnc := func() error {
+		err := r.delete(key)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -24,7 +27,7 @@ func (l *Lock) Delete(key string) error {
 	}
 
 	{
-		err = l.brk.Execute(act)
+		err = r.bac.Backoff(fnc)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -33,19 +36,19 @@ func (l *Lock) Delete(key string) error {
 	return nil
 }
 
-func (l *Lock) delete(key string) error {
+func (r *Redis) delete(key string) error {
 	var err error
 
 	var con redis.Conn
 	{
-		con = l.poo.Get()
+		con = r.poo.Get()
 		defer con.Close()
 	}
 
 	var arg []interface{}
 	{
 		arg = append(arg,
-			strings.Join([]string{l.pre, key}, l.del),
+			strings.Join([]string{r.pre, key}, r.del),
 		)
 	}
 

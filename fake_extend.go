@@ -1,4 +1,4 @@
-package fake
+package locker
 
 func (f *Fake) Extend(key string, val string) error {
 	if f.FakeExtend != nil {

@@ -1,4 +1,4 @@
-package fake
+package locker
 
 type Fake struct {
 	FakeCreate func() (string, error)

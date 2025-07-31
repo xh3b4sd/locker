@@ -1,4 +1,4 @@
-package pool
+package locker
 
 import (
 	"net"
@@ -8,7 +8,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func New() *redis.Pool {
+func Pool() *redis.Pool {
 	var add string
 	{
 		add = envAdd()

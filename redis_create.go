@@ -1,4 +1,4 @@
-package lock
+package locker
 
 import (
 	"errors"
@@ -10,18 +10,21 @@ import (
 	"github.com/xh3b4sd/tracer"
 )
 
-func (l *Lock) Create(key string) (string, error) {
+func (r *Redis) Create(key string) (string, error) {
 	var err error
 
 	if key == "" {
-		return "", tracer.Maskf(lockKeyEmptyError, "Locker.Create")
+		return "", tracer.Mask(lockKeyEmptyError,
+			tracer.Context{Key: "method", Value: "Redis.Create"},
+			tracer.Context{Key: "lock key", Value: key},
+		)
 	}
 
 	var val string
 	var cre bool
 
-	act := func() error {
-		val, cre, err = l.create(key)
+	fnc := func() error {
+		val, cre, err = r.create(key)
 		if err != nil {
 			return tracer.Mask(err)
 		}
@@ -30,7 +33,7 @@ func (l *Lock) Create(key string) (string, error) {
 	}
 
 	{
-		err = l.brk.Execute(act)
+		err = r.bac.Backoff(fnc)
 		if err != nil {
 			return "", tracer.Mask(err)
 		}
@@ -38,19 +41,23 @@ func (l *Lock) Create(key string) (string, error) {
 
 	{
 		if !cre {
-			return "", tracer.Mask(lockAlreadyExistsError)
+			return "", tracer.Mask(lockAlreadyExistsError,
+				tracer.Context{Key: "method", Value: "Redis.Create"},
+				tracer.Context{Key: "lock key", Value: key},
+				tracer.Context{Key: "lock value", Value: val},
+			)
 		}
 	}
 
 	return val, nil
 }
 
-func (l *Lock) create(key string) (string, bool, error) {
+func (r *Redis) create(key string) (string, bool, error) {
 	var err error
 
 	var con redis.Conn
 	{
-		con = l.poo.Get()
+		con = r.poo.Get()
 		defer con.Close()
 	}
 
@@ -62,11 +69,11 @@ func (l *Lock) create(key string) (string, bool, error) {
 	var arg []interface{}
 	{
 		arg = append(arg,
-			strings.Join([]string{l.pre, key}, l.del),
+			strings.Join([]string{r.pre, key}, r.del),
 			val,
 			"NX", // only set the key if it does not already exist
 			"EX",
-			l.exp.Seconds(),
+			r.exp.Seconds(),
 		)
 	}
 
@@ -82,7 +89,11 @@ func (l *Lock) create(key string) (string, bool, error) {
 
 	{
 		if res != "OK" {
-			return "", false, tracer.Mask(executionFailedError)
+			return "", false, tracer.Mask(lockAttemptFailedError,
+				tracer.Context{Key: "method", Value: "Redis.Create"},
+				tracer.Context{Key: "lock key", Value: key},
+				tracer.Context{Key: "lock value", Value: val},
+			)
 		}
 	}
 

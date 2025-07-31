@@ -4,7 +4,7 @@ Distributed redis lock.
 
 ```go
 import (
-	"github.com/xh3b4sd/locker/lock"
+	"github.com/xh3b4sd/locker"
 	"github.com/xh3b4sd/locker/pool"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	// Every locker requires a redis connection pool.
 	var loc locker.Interface
 	{
-		loc = lock.New(lock.Config{
+		loc = locker.New(locker.Config{
 			Poo: pool.New(),
 		})
 	}
@@ -54,8 +54,6 @@ func main() {
 }
 ```
 
-
-
 ### Conformance Tests
 
 ```
@@ -63,10 +61,8 @@ docker run --rm --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:l
 ```
 
 ```
-go test ./... -race -tags redis
+go test ./... -race -tags integration
 ```
-
-
 
 ### Redis Port
 

@@ -12,7 +12,7 @@ on: "push"
 jobs:
   go-redis:
     runs-on: "ubuntu-latest"
-    container: "golang:1.21-alpine"
+    container: "golang:1.24-alpine"
 
     services:
       redis:
@@ -38,4 +38,4 @@ jobs:
           REDIS_HOST: "redis"
           REDIS_PORT: "6379"
         run: |
-          go test ./... -race -tags redis
+          go test ./... -race -tags integration

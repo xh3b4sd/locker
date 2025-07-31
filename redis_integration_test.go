@@ -1,25 +1,23 @@
-//go:build redis
+//go:build integration
 
-package lock
+package locker
 
 import (
 	"testing"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/xh3b4sd/locker"
-	"github.com/xh3b4sd/locker/pool"
 	"github.com/xh3b4sd/tracer"
 )
 
-func Test_Redis_Delete(t *testing.T) {
+func Test_Locker_Redis_Delete(t *testing.T) {
 	var err error
 
-	var loc locker.Interface
+	var loc Interface
 	{
 		loc = New(Config{
 			Exp: 1 * time.Second,
-			Poo: prgAll(pool.New()),
+			Poo: prgAll(Pool()),
 		})
 	}
 
@@ -62,14 +60,14 @@ func Test_Redis_Delete(t *testing.T) {
 	}
 }
 
-func Test_Redis_Exists(t *testing.T) {
+func Test_Locker_Redis_Exists(t *testing.T) {
 	var err error
 
-	var loc locker.Interface
+	var loc Interface
 	{
 		loc = New(Config{
 			Exp: 1 * time.Second,
-			Poo: prgAll(pool.New()),
+			Poo: prgAll(Pool()),
 		})
 	}
 
@@ -121,14 +119,14 @@ func Test_Redis_Exists(t *testing.T) {
 	}
 }
 
-func Test_Redis_Expiry(t *testing.T) {
+func Test_Locker_Redis_Expiry(t *testing.T) {
 	var err error
 
-	var loc locker.Interface
+	var loc Interface
 	{
 		loc = New(Config{
 			Exp: 1 * time.Second,
-			Poo: prgAll(pool.New()),
+			Poo: prgAll(Pool()),
 		})
 	}
 
@@ -214,14 +212,14 @@ func Test_Redis_Expiry(t *testing.T) {
 	}
 }
 
-func Test_Redis_Locked(t *testing.T) {
+func Test_Locker_Redis_Locked(t *testing.T) {
 	var err error
 
-	var loc locker.Interface
+	var loc Interface
 	{
 		loc = New(Config{
 			Exp: 1 * time.Second,
-			Poo: prgAll(pool.New()),
+			Poo: prgAll(Pool()),
 		})
 	}
 
