@@ -1,9 +1,9 @@
 module github.com/xh3b4sd/locker
 
-go 1.24
+go 1.24.0
 
 require (
 	github.com/gomodule/redigo v1.9.2
-	github.com/xh3b4sd/choreo v0.5.0
+	github.com/xh3b4sd/choreo v0.6.0
 	github.com/xh3b4sd/tracer v1.0.0
 )
