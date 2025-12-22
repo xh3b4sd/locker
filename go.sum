@@ -8,8 +8,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
-github.com/xh3b4sd/choreo v0.6.0 h1:x6B/zPRwhwqaSt6eQ9bMom+9ROVGf728946hlcLwMjA=
-github.com/xh3b4sd/choreo v0.6.0/go.mod h1:FSmCDJYDGChWwn06JVitOrbFoSie8G5G34Zt4k16NBQ=
+github.com/xh3b4sd/choreo v0.7.0 h1:ttSytvpl2gRhg7Cl9goIbohpYXazAWdTJmVKjZcQ0hM=
+github.com/xh3b4sd/choreo v0.7.0/go.mod h1:lUt1attvO6dqVuT+hVMb54u+1AbCYi+2CYkw3RDVV+k=
 github.com/xh3b4sd/tracer v1.0.0 h1:mr9uYCx/Ry2w1wdJz0V0Kq71/KeF+hUQjbZQJCxm3Zw=
 github.com/xh3b4sd/tracer v1.0.0/go.mod h1:nfZeNH5RRfqE6ctQroIfY75b2NRlJHl2g+HP7ddvHrM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
