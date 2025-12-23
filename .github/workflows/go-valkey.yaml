@@ -2,40 +2,39 @@
 # Do not edit. This file was generated via the "workflow" command line tool.
 # More information about the tool can be found at github.com/xh3b4sd/workflow.
 #
-#     workflow create redis
+#     workflow create valkey
 #
 
-name: "go-redis"
+name: "Go Valkey"
 
 on: "push"
 
 jobs:
-  go-redis:
+  go-valkey:
     runs-on: "ubuntu-latest"
-    container: "golang:1.24-alpine"
+    container: "golang:1.25-alpine"
 
     services:
-      redis:
-        image: "redis"
+      valkey:
+        image: "valkey/valkey:8.1"
         options: >-
-          --health-cmd "redis-cli ping"
+          --health-cmd "valkey-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     steps:
       - name: "Setup Git Project"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
 
       - name: "Install Race Dependency"
         run: |
-          apk add gcc
-          apk add musl-dev
+          apk add --no-cache gcc musl-dev
 
       - name: "Check Go Tests"
         env:
           CGO_ENABLED: "1"
-          REDIS_HOST: "redis"
-          REDIS_PORT: "6379"
+          VALKEY_HOST: "valkey"
+          VALKEY_PORT: "6379"
         run: |
-          go test ./... -race -tags integration
+          go test ./... -race -tags valkey
