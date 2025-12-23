@@ -58,7 +58,10 @@ func (r *Redis) create(key string) (string, bool, error) {
 	var con redis.Conn
 	{
 		con = r.poo.Get()
-		defer con.Close()
+	}
+
+	{
+		defer con.Close() // nolint:errcheck
 	}
 
 	var val string
@@ -66,7 +69,7 @@ func (r *Redis) create(key string) (string, bool, error) {
 		val = strconv.FormatInt(time.Now().UTC().Unix(), 10)
 	}
 
-	var arg []interface{}
+	var arg []any
 	{
 		arg = append(arg,
 			strings.Join([]string{r.pre, key}, r.del),

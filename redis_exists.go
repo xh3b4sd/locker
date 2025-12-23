@@ -46,10 +46,13 @@ func (r *Redis) exists(key string) (string, bool, error) {
 	var con redis.Conn
 	{
 		con = r.poo.Get()
-		defer con.Close()
 	}
 
-	var arg []interface{}
+	{
+		defer con.Close() // nolint:errcheck
+	}
+
+	var arg []any
 	{
 		arg = append(arg,
 			strings.Join([]string{r.pre, key}, r.del),
